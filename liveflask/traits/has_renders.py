@@ -5,7 +5,7 @@ from flask import render_template_string, session
 from flask import request as req
 from markupsafe import Markup
 
-from ...mvlive.utils import to_class
+from ..utils import to_class
 
 
 class HasRenders:

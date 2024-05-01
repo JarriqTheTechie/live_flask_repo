@@ -1,8 +1,8 @@
 from typing import Any, NoReturn
 
 from flask import session
-from ...mvlive.traits.Bootable import Bootable
-from ...mvlive.utils import dict_diff_changed_values
+from ..traits.Bootable import Bootable
+from ..utils import dict_diff_changed_values
 
 
 class HasActions:

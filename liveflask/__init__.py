@@ -7,10 +7,10 @@ from flask import Blueprint, render_template, Response
 from flask import request
 from markupsafe import Markup
 
-from .mvlive.traits.has_actions import HasActions
-from .mvlive.traits.has_props import HasProps
-from .mvlive.traits.has_renders import HasRenders
-from .mvlive.traits.has_snapshots import HasSnapshots
+from .traits.has_actions import HasActions
+from .traits.has_props import HasProps
+from .traits.has_renders import HasRenders
+from .traits.has_snapshots import HasSnapshots
 
 
 def parse_argument(arg):
@@ -83,12 +83,15 @@ def component(cls) -> 'cls':
     return DecoratedClass
 
 
-class MVLive(HasRenders, HasProps, HasSnapshots, HasActions):
+class LiveFlask(HasRenders, HasProps, HasSnapshots, HasActions):
     pass
 
 
-def LiveFlask(app):
-    app.add_template_global(MVLive().inital_render, 'live')
+def LiveFlaskExt(app):
+    app.add_template_global(
+        LiveFlask().inital_render, 'live'
+    )
+
     package_dir = os.path.dirname(os.path.abspath(__file__))
     enduser_project_dir = os.getcwd()
     # check if the project directory has a templates folder
@@ -105,28 +108,28 @@ def LiveFlask(app):
     @liveflask_bp.post('/')
     def live():
         req = request.json
-        _class: object = MVLive().from_snapshot(req)
+        _class: object = LiveFlask().from_snapshot(req)
 
         if req.get('method'):
             method = req.get('method')
             args = req.get('args')
             kwargs = req.get('kwargs') or {}
             if method == "emit":
-                component = MVLive().call_event_handler(_class, method, *return_arguments(args), **kwargs)
+                component = LiveFlask().call_event_handler(_class, method, *return_arguments(args), **kwargs)
             elif method == "emit_to":
-                component = MVLive().call_event_handler(_class, method, *return_arguments(args), **kwargs)
+                component = LiveFlask().call_event_handler(_class, method, *return_arguments(args), **kwargs)
             else:
-                component = MVLive().call_method(_class, method, *return_arguments(args))
+                component = LiveFlask().call_method(_class, method, *return_arguments(args))
 
         if req.get('update_property'):
             req_updated_prop = req.get('update_property')
-            MVLive().set_props(_class, req_updated_prop[0], req_updated_prop[1])
+            LiveFlask().set_props(_class, req_updated_prop[0], req_updated_prop[1])
             component = _class
 
-        MVLive().set_props(_class, 'emits', _class.emits)
+        LiveFlask().set_props(_class, 'emits', _class.emits)
         component = _class
 
-        html, snapshot = MVLive().to_snapshot(component)
+        html, snapshot = LiveFlask().to_snapshot(component)
         return {
             "html": html, "snapshot": snapshot
         }

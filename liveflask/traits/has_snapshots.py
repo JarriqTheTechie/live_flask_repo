@@ -7,7 +7,7 @@ from typing import Any
 from flask import render_template_string
 from markupsafe import Markup
 
-from ...mvlive.utils import to_class
+from ..utils import to_class
 
 
 class HasSnapshots:
