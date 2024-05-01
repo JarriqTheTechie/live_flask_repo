@@ -2,7 +2,7 @@ import ast
 import functools
 import os
 import secrets
-
+import gzip
 from flask import Blueprint, render_template, Response
 from flask import request
 from markupsafe import Markup
@@ -148,7 +148,10 @@ def LiveFlaskExt(app):
         for js_file in js_files:
             with open(f'{package_dir}/static/liveflask/{js_file}', 'r') as f:
                 combined_js += f.read()
-        resp = Response(combined_js)
+        resp = Response(
+            gzip.compress(combined_js.encode('utf-8'))
+        )
+        resp.headers['Content-Encoding'] = 'gzip'
         resp.mimetype = 'application/javascript'
         resp.headers['Cache-Control'] = 'public, max-age=3600'
         return resp
@@ -159,9 +162,13 @@ def LiveFlaskExt(app):
         # serve liveflask.js from static directory with the mimetype of 'application/javascript'
         with open(f'{package_dir}/static/liveflask/liveflask.js', 'r') as f:
             combined_js += f.read()
-        resp = Response(combined_js)
+        resp = Response(
+            gzip.compress(combined_js.encode('utf-8'))
+        )
+        resp.headers['Content-Encoding'] = 'gzip'
         resp.mimetype = 'application/javascript'
         resp.headers['Cache-Control'] = 'public, max-age=3600'
+
         return resp
 
     @app.template_global()
