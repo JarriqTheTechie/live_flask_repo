@@ -150,6 +150,7 @@ def LiveFlaskExt(app):
                 combined_js += f.read()
         resp = Response(combined_js)
         resp.mimetype = 'application/javascript'
+        resp.headers['Cache-Control'] = 'public, max-age=3600'
         return resp
 
     @liveflask_bp.route("/liveflask.js")
@@ -160,6 +161,7 @@ def LiveFlaskExt(app):
             combined_js += f.read()
         resp = Response(combined_js)
         resp.mimetype = 'application/javascript'
+        resp.headers['Cache-Control'] = 'public, max-age=3600'
         return resp
 
     @app.template_global()

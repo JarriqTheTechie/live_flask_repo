@@ -127,7 +127,7 @@ function send_request(el, add_to_payload, target) {
     let emits;
     let snapshot = el.__liveflask
     let children = attr_beginswith('data-component', el);
-    fetch("/liveflask", {
+    fetch("/liveflask/", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
