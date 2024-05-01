@@ -129,7 +129,7 @@ function send_request(el, add_to_payload, target) {
     let children = attr_beginswith('data-component', el);
     fetch("/liveflask/", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: {"Content-Type": "application/json", "X-CSRF-Token": csrfToken},
         body: JSON.stringify({
             snapshot: snapshot,
             ...add_to_payload
