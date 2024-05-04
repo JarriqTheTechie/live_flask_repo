@@ -3,10 +3,10 @@ import functools
 import os
 import secrets
 import gzip
-from flask import Blueprint, render_template, Response
+from flask import Blueprint, render_template, Response, Flask
 from flask import request
 from markupsafe import Markup
-
+from flask_wtf import CSRFProtect
 from .traits.has_actions import HasActions
 from .traits.has_props import HasProps
 from .traits.has_renders import HasRenders
@@ -87,10 +87,15 @@ class LiveFlask(HasRenders, HasProps, HasSnapshots, HasActions):
     pass
 
 
-def LiveFlaskExt(app):
+def LiveFlaskExt(app: Flask):
     app.add_template_global(
         LiveFlask().inital_render, 'live'
     )
+
+    if "csrf" not in list(app.extensions.keys()):
+        # register CSRF protection
+        csrf = CSRFProtect(app)
+
 
     package_dir = os.path.dirname(os.path.abspath(__file__))
     enduser_project_dir = os.getcwd()
