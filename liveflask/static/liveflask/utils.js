@@ -129,11 +129,27 @@ function send_request(el, add_to_payload, target) {
     let children = attr_beginswith('data-component', el);
     fetch("/liveflask/", {
         method: "POST",
-        headers: {"Content-Type": "application/json", "X-CSRF-Token": csrfToken} ,
+        headers: {"Content-Type": "application/json", "X-CSRF-Token": csrfToken},
         body: JSON.stringify({
             snapshot: snapshot,
             ...add_to_payload
         })
+    }).then(response => {
+        if (!response.ok) {
+            if (response.status === 400) {
+                return response.text().then(text => {
+                    if (text.includes("The CSRF token has expired.")) {
+                        // Handle CSRF token expiration here
+                        onpageexpired();
+                    } else {
+                        throw new Error(text);
+                    }
+                });
+            } else {
+                throw new Error('Network response was not ok.');
+            }
+        }
+        return response;
     }).then(i => i.json()).then(response => {
         let {html, snapshot} = response
         el.__liveflask = snapshot
@@ -213,6 +229,11 @@ function send_request(el, add_to_payload, target) {
 
 
     })
+}
+
+
+function onpageexpired() {
+    alert("The CSRF token has expired. Please refresh the page.")
 }
 
 
