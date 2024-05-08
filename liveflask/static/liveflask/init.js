@@ -20,9 +20,20 @@ function init_inits(el) {
         let property;
         let value;
         let modifier;
+
+
         [property, modifier, value] = get_model_prop_value(i, "data-init")
 
-        send_request(el, {update_property: [property.split("|")[1], $(i).val()]}, i)
+        let method = property.split("(")[0];
+        let args;
+        try {
+            args = replace_undefined(property).match(/\(([^)]+)\)/)[1];
+            // Love this one console.log(args)
+        } catch (e) {
+            args = "__NOVAL__"
+        }
+
+        send_request(el, {'method': method, "args": args}, i)
     })
 
 }
