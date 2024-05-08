@@ -145,6 +145,7 @@ def LiveFlaskExt(app: Flask):
             # 'liveflask.js',
             'utils.js',
             'model.js',
+            'init.js',
             'action.js',
             'polling.js',
             'events.js'

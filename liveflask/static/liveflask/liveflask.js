@@ -15,6 +15,7 @@ document.querySelectorAll('[data-component]').forEach(el => {
     init_action(el)
     init_polling(el)
 
+
     el.__liveflask.set = function (key, value) {
         el.__liveflask[key] = value
         send_request(el, {update_property: [key, value]}, undefined)
@@ -22,5 +23,6 @@ document.querySelectorAll('[data-component]').forEach(el => {
 
     // register event named liveflask:initialized
     document.dispatchEvent(new CustomEvent('liveflask:initialized', {detail: el.__liveflask, target: el}))
+    init_inits(el)
 
 })
