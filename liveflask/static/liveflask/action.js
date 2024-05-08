@@ -35,7 +35,16 @@ function init_action(el) {
                     args = "__NOVAL__"
                 }
 
-                send_request(el, {'method': method, "args": args}, i)
+                if (i.hasAttribute('data-action-confirm')) {
+                    if (confirm(i.getAttribute("data-action-confirm"))) {
+                        send_request(el, {'method': method, "args": args}, i)
+                    } else {
+                        return false
+                    }
+                } else {
+                    send_request(el, {'method': method, "args": args}, i)
+                }
+
             })
             i.__data_action_click_registered = true
         }
