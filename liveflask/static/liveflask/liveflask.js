@@ -15,19 +15,24 @@ window.liveflask = {
     },
     all: function () {
         return this.components;
-    }
+    },
 }
 
 document.querySelectorAll('[data-component]').forEach(el => {
     let live_flask_children = [];
     let elementsWithDataLoading = el.querySelectorAll('[data-loading]');
+    let elements_with_offline_directive = el.querySelectorAll('[data-offline]');
+
 
     el.__liveflask = JSON.parse(el.getAttribute('data-snapshot'));
     el.removeAttribute('data-snapshot')
 
 
     elementsWithDataLoading.forEach(element => {
-        console.log("Element with data-loading: ", element);
+        element.style.display = "none";
+    });
+
+    elements_with_offline_directive.forEach(element => {
         element.style.display = "none";
     });
 
@@ -49,3 +54,18 @@ document.querySelectorAll('[data-component]').forEach(el => {
     init_inits(el)
 
 })
+
+
+window.addEventListener('online', function (event) {
+    let elements_with_offline_directive = document.querySelectorAll('[data-offline]');
+    elements_with_offline_directive.forEach(element => {
+        element.style.display = "none";
+    });
+});
+
+window.addEventListener('offline', function (event) {
+    let elements_with_offline_directive = document.querySelectorAll('[data-offline]');
+    elements_with_offline_directive.forEach(element => {
+        element.style.display = "block";
+    });
+});

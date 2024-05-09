@@ -129,8 +129,24 @@ function send_request(el, add_to_payload, target) {
     let children = attr_beginswith('data-component', el);
     let elementsWithDataLoading = el.querySelectorAll('[data-loading]');
     elementsWithDataLoading.forEach(element => {
-        console.log("Element with data-loading: ", element);
-        element.style.display = "block";
+        if (element.hasAttribute("data-loading-target")) {
+            let loading_target = element.getAttribute("data-loading-target");
+            if (loading_target && loading_target.includes(',')) {
+                loading_target = loading_target.split(',').map(item => item.trim());
+
+                // Now loading_target is an array containing the split values
+            } else {
+                loading_target = [loading_target];
+            }
+
+            let target_action_or_model = target.getAttribute("data-action") || target.getAttribute("data-model");
+            console.log("Loading Target: ", loading_target)
+            if (loading_target.includes(target_action_or_model)) {
+                element.style.display = "block";
+            }
+        } else {
+            element.style.display = "block";
+        }
     });
 
     fetch("/liveflask/", {
