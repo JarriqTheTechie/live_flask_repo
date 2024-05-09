@@ -20,9 +20,16 @@ window.liveflask = {
 
 document.querySelectorAll('[data-component]').forEach(el => {
     let live_flask_children = [];
+    let elementsWithDataLoading = el.querySelectorAll('[data-loading]');
 
     el.__liveflask = JSON.parse(el.getAttribute('data-snapshot'));
     el.removeAttribute('data-snapshot')
+
+
+    elementsWithDataLoading.forEach(element => {
+        console.log("Element with data-loading: ", element);
+        element.style.display = "none";
+    });
 
 
     init_model(el)

@@ -127,6 +127,12 @@ function send_request(el, add_to_payload, target) {
     let emits;
     let snapshot = el.__liveflask
     let children = attr_beginswith('data-component', el);
+    let elementsWithDataLoading = el.querySelectorAll('[data-loading]');
+    elementsWithDataLoading.forEach(element => {
+        console.log("Element with data-loading: ", element);
+        element.style.display = "block";
+    });
+
     fetch("/liveflask/", {
         method: "POST",
         headers: {"Content-Type": "application/json", "X-CSRF-Token": csrfToken},
@@ -224,6 +230,13 @@ function send_request(el, add_to_payload, target) {
             });
             window.history.pushState({}, '', url);
         }
+
+
+        let elementsWithDataLoading = el.querySelectorAll('[data-loading]');
+        elementsWithDataLoading.forEach(element => {
+            console.log("Element with data-loading: ", element);
+            element.style.display = "none";
+        });
 
     }).then(el => {
 
