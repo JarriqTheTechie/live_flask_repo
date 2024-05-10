@@ -126,8 +126,20 @@ function send_request(el, add_to_payload, target) {
     let emits;
     let snapshot = el.__liveflask
     let children = attr_beginswith('data-component', el);
+
     let elementsWithDataLoading = el.querySelectorAll('[data-loading]');
+    let elementsWithDataAttr = el.querySelectorAll('[data-loading-attr]');
+
+    elementsWithDataAttr.forEach(element => {
+        let loading_attr = get_loading_attr(element);
+        if (loading_attr !== undefined) {
+            element.setAttribute(loading_attr, "true");
+        }
+    });
+
     elementsWithDataLoading.forEach(element => {
+        let loading_classes = get_loading_class(element);
+
         if (element.hasAttribute("data-loading-target")) {
             let loading_target = element.getAttribute("data-loading-target");
             if (loading_target && loading_target.includes(',')) {
@@ -140,10 +152,21 @@ function send_request(el, add_to_payload, target) {
 
             let target_action_or_model = target.getAttribute("data-action") || target.getAttribute("data-model");
             if (loading_target.includes(target_action_or_model)) {
-                element.style.display = "block";
+                element.style.display = get_display_style(element);
+                if (loading_classes !== undefined) {
+                    loading_classes.forEach(loading_class => {
+                        element.classList.add(loading_class);
+                    });
+                }
             }
+
         } else {
             element.style.display = "block";
+            if (loading_classes !== undefined) {
+                loading_classes.forEach(loading_class => {
+                    element.classList.add(loading_class);
+                });
+            }
         }
     });
 
@@ -243,10 +266,23 @@ function send_request(el, add_to_payload, target) {
         }
 
 
-        let elementsWithDataLoading = el.querySelectorAll('[data-loading]');
+        elementsWithDataAttr.forEach(element => {
+            let loading_attr = get_loading_attr(element);
+            if (loading_attr !== undefined) {
+                element.removeAttribute(loading_attr);
+            }
+        });
+
         elementsWithDataLoading.forEach(element => {
+            let loading_classes = get_loading_class(element);
+            if (loading_classes !== undefined) {
+                loading_classes.forEach(loading_class => {
+                    element.classList.remove(loading_class);
+                });
+            }
             element.style.display = "none";
         });
+
 
     }).then(el => {
 
@@ -292,4 +328,34 @@ function update_children(children = []) {
     })
 }
 
+function get_loading_class(element) {
+    if (element.hasAttribute("data-loading-class")) {
+        let loading_class = element.getAttribute("data-loading-class");
+        if (loading_class && loading_class.includes(',')) {
+            loading_class = loading_class.split(',').map(item => item.trim());
+            return loading_class;
+        } else {
+            return [loading_class];
+        }
+    } else {
+        return undefined;
+    }
+}
 
+function get_loading_attr(element) {
+    if (element.hasAttribute("data-loading-attr")) {
+        let loading_attr = element.getAttribute("data-loading-attr");
+        return loading_attr;
+    } else {
+        return undefined;
+    }
+}
+
+function get_display_style(element) {
+    if (element.hasAttribute("data-loading")) {
+        let display_style = element.getAttribute("data-loading");
+        return display_style;
+    } else {
+        return "block";
+    }
+}
