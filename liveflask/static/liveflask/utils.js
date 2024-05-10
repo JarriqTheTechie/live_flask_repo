@@ -50,7 +50,6 @@ function get_model_prop_value(el, attribute) {
         if (property.split("|").length === 2) {
             modifier = value.split("|")[0];
             value = value.split("|")[1];
-            //console.log(property.split("|")[0], modifier, value)
             return [property, modifier, value];
         }
     }
@@ -140,7 +139,6 @@ function send_request(el, add_to_payload, target) {
             }
 
             let target_action_or_model = target.getAttribute("data-action") || target.getAttribute("data-model");
-            console.log("Loading Target: ", loading_target)
             if (loading_target.includes(target_action_or_model)) {
                 element.style.display = "block";
             }
@@ -190,13 +188,11 @@ function send_request(el, add_to_payload, target) {
             /* loop through the emits and fire the events */
             Object.keys(emits).forEach(event => {
                 let current_event = emits[event]
-                // Love this one console.log("Current Event: ", current_event)
                 let event_name = current_event['event']
                 let event_params = current_event['params']
                 let kwargs = current_event['kwargs']
                 let to = current_event['to']
                 let final_params = event_name
-                // Love this one console.log("Emitted Event: ", event_name, " with params: ", event_params, " to: ", to)
                 document.dispatchEvent(new CustomEvent(event_name, {
                     detail: {
                         event: event_name,
@@ -212,7 +208,6 @@ function send_request(el, add_to_payload, target) {
                 } else if (to === "all") {
                     let components = document.querySelectorAll(`[data-component]`)
                     components.forEach(component => {
-                        // Love this one console.log("Emitting to all component - ", component, " with params: ", final_params)
                         send_request(component, {
                             method: "emit",
                             args: final_params,
@@ -250,7 +245,6 @@ function send_request(el, add_to_payload, target) {
 
         let elementsWithDataLoading = el.querySelectorAll('[data-loading]');
         elementsWithDataLoading.forEach(element => {
-            console.log("Element with data-loading: ", element);
             element.style.display = "none";
         });
 

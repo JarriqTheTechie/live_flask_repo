@@ -6,7 +6,6 @@
 function init_polling(el) {
     let component_name = el.__liveflask['class']
     let retrieved_polls = attr_beginswith('data-poll', el);
-    //console.log(retrieved_polls)
     el.__liveflask['polls'] = [];
     let current_component;
 
