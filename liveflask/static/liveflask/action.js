@@ -35,6 +35,18 @@ function init_action(el) {
             } else {
                 return false;
             }
+
+        } else if (i.hasAttribute('data-action-confirm-prompt')) {
+            let prompt_message = i.getAttribute("data-action-confirm-prompt");
+            let accepted_value = prompt_message.split("|")[1].trim();
+            let prompt_response = prompt(prompt_message.split("|")[0].trim());
+
+            if (accepted_value === prompt_response) {
+                // Fixed sending arguments as string, ensuring it's an array
+                send_request(el, {'method': method, "args": args}, i); // Split args into array
+            } else {
+                return false;
+            }
         } else {
             // Fixed sending arguments as string, ensuring it's an array
             send_request(el, {'method': method, "args": args}, i); // Split args into array
