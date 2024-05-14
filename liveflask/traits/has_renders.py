@@ -13,8 +13,11 @@ class HasRenders:
         #print(f"Doing initial render {component_name}")
         # if key == "":
         #     key = f"mvlive_{component_name}_{secrets.token_urlsafe()}"
-        component_name = component_name + "Component"
-        _class: Any = to_class(f"templates.liveflask.{component_name}.{component_name}")
+        if "." in component_name:
+            dir_name, component_name = component_name.rsplit(".", 1)
+            _class: Any = to_class(f"templates.liveflask.{dir_name}.{component_name}.{component_name}")
+        else:
+            _class: Any = to_class(f"templates.liveflask.{component_name}.{component_name}")
         component_instance = _class()
         component_name: str = _class.__name__
 
