@@ -4,14 +4,14 @@
 
 function init_action(el) {
     let component_name = el.__liveflask['class']
-    let retrieved_actions = attr_beginswith('data-action', el);
+    let retrieved_actions = attr_beginswith('live-action', el);
     //console.log(retrieved_actions)
     el.__liveflask['actions'] = [];
     el.__liveflask.prefetches = [];
     let current_component;
 
     retrieved_actions.forEach(i => {
-        current_component = i.parentNode.closest('[data-component]').getAttribute("data-component");
+        current_component = i.parentNode.closest('[live-component]').getAttribute("live-component");
         if (current_component !== component_name) return;
         el.__liveflask['actions'].push(i)
     })
@@ -28,16 +28,16 @@ function init_action(el) {
             args = "__NOVAL__";
         }
 
-        if (i.hasAttribute('data-action-confirm')) {
-            if (confirm(i.getAttribute("data-action-confirm"))) {
+        if (i.hasAttribute('live-action-confirm')) {
+            if (confirm(i.getAttribute("live-action-confirm"))) {
                 // Fixed sending arguments as string, ensuring it's an array
                 send_request(el, {'method': method, "args": args}, i); // Split args into array
             } else {
                 return false;
             }
 
-        } else if (i.hasAttribute('data-action-confirm-prompt')) {
-            let prompt_message = i.getAttribute("data-action-confirm-prompt");
+        } else if (i.hasAttribute('live-action-confirm-prompt')) {
+            let prompt_message = i.getAttribute("live-action-confirm-prompt");
             let accepted_value = prompt_message.split("|")[1].trim();
             let prompt_response = prompt(prompt_message.split("|")[0].trim());
 
@@ -61,21 +61,21 @@ function init_action(el) {
         let action_event;
 
 
-        [property, modifier, value] = get_model_prop_value(i, "data-action")
+        [property, modifier, value] = get_model_prop_value(i, "live-action")
 
         if (!i.__data_action_click_registered) {
             i.addEventListener('click', event => {
                 handle_action(property, el, i); // Added 'property' as a parameter
             })
 
-            if (i.hasAttribute("data-action-mouseenter")) {
+            if (i.hasAttribute("live-action-mouseenter")) {
                 i.addEventListener('mouseenter', event => {
                     handle_action(property, el, i); // Added 'property' as a parameter
                 })
             }
 
-            if (i.hasAttribute("data-action-keydown")) {
-                let key = i.getAttribute("data-action-keydown");
+            if (i.hasAttribute("live-action-keydown")) {
+                let key = i.getAttribute("live-action-keydown");
                 i.addEventListener('keydown', event => {
                     if (event.key === key) {
                         handle_action(property, el, i); // Added 'property' as a parameter
@@ -83,8 +83,8 @@ function init_action(el) {
                 })
             }
 
-            if (i.hasAttribute("data-action-keyup")) {
-                let key = i.getAttribute("data-action-keydown");
+            if (i.hasAttribute("live-action-keyup")) {
+                let key = i.getAttribute("live-action-keydown");
                 i.addEventListener('keyup', event => {
                     if (event.key === key) {
                         handle_action(property, el, i); // Added 'property' as a parameter
@@ -93,7 +93,7 @@ function init_action(el) {
             }
 
 
-            // if (i.hasAttribute("data-action-prefetch") && i.getAttribute("data-action-prefetch") === "true") {
+            // if (i.hasAttribute("live-action-prefetch") && i.getAttribute("live-action-prefetch") === "true") {
             //     i.addEventListener('mouseover', event => {
             //         let method = property.split("(")[0];
             //         let args;

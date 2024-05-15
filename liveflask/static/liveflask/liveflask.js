@@ -18,14 +18,14 @@ window.liveflask = {
     },
 }
 
-document.querySelectorAll('[data-component]').forEach(el => {
+document.querySelectorAll('[live-component]').forEach(el => {
     let live_flask_children = [];
-    let elementsWithDataLoading = el.querySelectorAll('[data-loading]');
-    let elements_with_offline_directive = el.querySelectorAll('[data-offline]');
+    let elementsWithDataLoading = el.querySelectorAll('[live-loading]');
+    let elements_with_offline_directive = el.querySelectorAll('[live-offline]');
 
 
-    el.__liveflask = JSON.parse(el.getAttribute('data-snapshot'));
-    el.removeAttribute('data-snapshot')
+    el.__liveflask = JSON.parse(el.getAttribute('live-snapshot'));
+    el.removeAttribute('live-snapshot')
 
 
     elementsWithDataLoading.forEach(element => {
@@ -57,14 +57,14 @@ document.querySelectorAll('[data-component]').forEach(el => {
 
 
 window.addEventListener('online', function (event) {
-    let elements_with_offline_directive = document.querySelectorAll('[data-offline]');
+    let elements_with_offline_directive = document.querySelectorAll('[live-offline]');
     elements_with_offline_directive.forEach(element => {
         element.style.display = "none";
     });
 });
 
 window.addEventListener('offline', function (event) {
-    let elements_with_offline_directive = document.querySelectorAll('[data-offline]');
+    let elements_with_offline_directive = document.querySelectorAll('[live-offline]');
     elements_with_offline_directive.forEach(element => {
         element.style.display = "block";
     });

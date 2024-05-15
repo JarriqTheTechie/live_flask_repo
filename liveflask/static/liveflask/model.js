@@ -4,13 +4,13 @@
 
 function init_model(el) {
     let component_name = el.__liveflask['class']
-    //el.__liveflask['children'] = attr_beginswith('data-component', el);
-    let retrieved_models = attr_beginswith('data-model', el);
+    //el.__liveflask['children'] = attr_beginswith('live-component', el);
+    let retrieved_models = attr_beginswith('live-model', el);
     el.__liveflask['models'] = [];
     let current_component;
 
     retrieved_models.forEach(i => {
-        current_component = i.parentNode.closest('[data-component]').getAttribute("data-component");
+        current_component = i.parentNode.closest('[live-component]').getAttribute("live-component");
         if (current_component !== component_name) return;
         el.__liveflask['models'].push(i)
     })
@@ -22,7 +22,7 @@ function init_model(el) {
         let modifier;
 
 
-        [property, modifier, value] = get_model_prop_value(i, "data-model")
+        [property, modifier, value] = get_model_prop_value(i, "live-model")
 
 
         if (property.includes('lazy')) {
@@ -51,10 +51,10 @@ function init_model(el) {
 }
 
 function update_liveflask_model_attributes(el) {
-    let data = el.parentNode.closest("[data-component]").__liveflask.data
+    let data = el.parentNode.closest("[live-component]").__liveflask.data
 
-    attr_beginswith('data-model', el).forEach(e => {
-        [attribute, raw_attribute, modifier, time, property, value] = parse_liveflask_attributes(e, "data-model")
+    attr_beginswith('live-model', el).forEach(e => {
+        [attribute, raw_attribute, modifier, time, property, value] = parse_liveflask_attributes(e, "live-model")
     })
 }
 

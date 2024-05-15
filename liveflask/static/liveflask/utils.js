@@ -56,7 +56,7 @@ function get_model_prop_value(el, attribute) {
 }
 
 const parse_model_attributes = el => {
-    let property = el.getAttribute("data-model");
+    let property = el.getAttribute("live-model");
     return [];
 };
 
@@ -125,10 +125,10 @@ function send_request(el, add_to_payload, target) {
     let updated_element;
     let emits;
     let snapshot = el.__liveflask
-    let children = attr_beginswith('data-component', el);
+    let children = attr_beginswith('live-component', el);
 
-    let elementsWithDataLoading = el.querySelectorAll('[data-loading]');
-    let elementsWithDataAttr = el.querySelectorAll('[data-loading-attr]');
+    let elementsWithDataLoading = el.querySelectorAll('[live-loading]');
+    let elementsWithDataAttr = el.querySelectorAll('[live-loading-attr]');
 
     elementsWithDataAttr.forEach(element => {
         let loading_attr = get_loading_attr(element);
@@ -140,8 +140,8 @@ function send_request(el, add_to_payload, target) {
     elementsWithDataLoading.forEach(element => {
         let loading_classes = get_loading_class(element);
 
-        if (element.hasAttribute("data-loading-target")) {
-            let loading_target = element.getAttribute("data-loading-target");
+        if (element.hasAttribute("live-loading-target")) {
+            let loading_target = element.getAttribute("live-loading-target");
             if (loading_target && loading_target.includes(',')) {
                 loading_target = loading_target.split(',').map(item => item.trim());
 
@@ -150,7 +150,7 @@ function send_request(el, add_to_payload, target) {
                 loading_target = [loading_target];
             }
 
-            let target_action_or_model = target.getAttribute("data-action") || target.getAttribute("data-model");
+            let target_action_or_model = target.getAttribute("live-action") || target.getAttribute("live-model");
             if (loading_target.includes(target_action_or_model)) {
                 element.style.display = get_display_style(element);
                 if (loading_classes !== undefined) {
@@ -198,8 +198,8 @@ function send_request(el, add_to_payload, target) {
         el.__liveflask = snapshot
         el.__liveflask['children'] = children
 
-        if (target.hasAttribute("data-poll") === true) {
-            morphdom(target, createElementFromHTML(html).querySelector(`[data-poll=${target.getAttribute('data-poll')}]`).outerHTML)
+        if (target.hasAttribute("live-poll") === true) {
+            morphdom(target, createElementFromHTML(html).querySelector(`[live-poll=${target.getAttribute('live-poll')}]`).outerHTML)
             return;
         }
 
@@ -229,7 +229,7 @@ function send_request(el, add_to_payload, target) {
                         update_dom(el, el.innerHTML);
                     });
                 } else if (to === "all") {
-                    let components = document.querySelectorAll(`[data-component]`)
+                    let components = document.querySelectorAll(`[live-component]`)
                     components.forEach(component => {
                         send_request(component, {
                             method: "emit",
@@ -238,7 +238,7 @@ function send_request(el, add_to_payload, target) {
                         }, target);
                     })
                 } else {
-                    let components = document.querySelectorAll(`[data-component=${to}]`)
+                    let components = document.querySelectorAll(`[live-component=${to}]`)
                     components.forEach(component => {
                         send_request(component, {
                             method: "emit",
@@ -266,13 +266,6 @@ function send_request(el, add_to_payload, target) {
         }
 
 
-        elementsWithDataAttr.forEach(element => {
-            let loading_attr = get_loading_attr(element);
-            if (loading_attr !== undefined) {
-                element.removeAttribute(loading_attr);
-            }
-        });
-
         elementsWithDataLoading.forEach(element => {
             let loading_classes = get_loading_class(element);
             if (loading_classes !== undefined) {
@@ -288,6 +281,12 @@ function send_request(el, add_to_payload, target) {
 
 
     })
+    elementsWithDataAttr.forEach(element => {
+        let loading_attr = get_loading_attr(element);
+        if (loading_attr !== undefined) {
+            element.removeAttribute(loading_attr);
+        }
+    });
 }
 
 
@@ -298,7 +297,7 @@ function onpageexpired() {
 
 function update_dom(el, html) {
     let class_name = el.__liveflask['class']
-    html = `<div data-component="${class_name}" id="${el.id}">${html}</div>`
+    html = `<div live-component="${class_name}" id="${el.id}">${html}</div>`
     morphdom(el, html, {
         onBeforeElUpdated: function (fromEl, toEl) {
             // spec - https://dom.spec.whatwg.org/#concept-node-equals
@@ -329,8 +328,8 @@ function update_children(children = []) {
 }
 
 function get_loading_class(element) {
-    if (element.hasAttribute("data-loading-class")) {
-        let loading_class = element.getAttribute("data-loading-class");
+    if (element.hasAttribute("live-loading-class")) {
+        let loading_class = element.getAttribute("live-loading-class");
         if (loading_class && loading_class.includes(',')) {
             loading_class = loading_class.split(',').map(item => item.trim());
             return loading_class;
@@ -343,8 +342,8 @@ function get_loading_class(element) {
 }
 
 function get_loading_attr(element) {
-    if (element.hasAttribute("data-loading-attr")) {
-        let loading_attr = element.getAttribute("data-loading-attr");
+    if (element.hasAttribute("live-loading-attr")) {
+        let loading_attr = element.getAttribute("live-loading-attr");
         return loading_attr;
     } else {
         return undefined;

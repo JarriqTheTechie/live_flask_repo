@@ -5,12 +5,12 @@
 
 function init_polling(el) {
     let component_name = el.__liveflask['class']
-    let retrieved_polls = attr_beginswith('data-poll', el);
+    let retrieved_polls = attr_beginswith('live-poll', el);
     el.__liveflask['polls'] = [];
     let current_component;
 
     retrieved_polls.forEach(i => {
-        current_component = i.parentNode.closest('[data-component]').getAttribute("data-component");
+        current_component = i.parentNode.closest('[live-component]').getAttribute("live-component");
         if (current_component !== component_name) return;
         el.__liveflask['polls'].push(i)
     })
@@ -22,7 +22,7 @@ function init_polling(el) {
         let modifier;
 
 
-        [property, modifier, value] = get_model_prop_value(i, "data-poll")
+        [property, modifier, value] = get_model_prop_value(i, "live-poll")
 
         let method = property.split("(")[0];
         let args;
@@ -41,7 +41,7 @@ function init_polling(el) {
         }
 
 
-        [property, modifier, value] = get_model_prop_value(i, "data-poll-delay");
+        [property, modifier, value] = get_model_prop_value(i, "live-poll-delay");
         if (property === undefined) {
             time = "2s"
         }

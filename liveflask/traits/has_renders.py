@@ -68,7 +68,7 @@ class HasRenders:
         return Markup(
             render_template_string(
                 """
-                    <div data-component="{{ component_name }}" id="{{ key }}" data-snapshot="{{ snapshot_attr }}">
+                    <div live-component="{{ component_name }}" id="{{ key }}" live-snapshot="{{ snapshot_attr }}">
                         {{html|safe}}
                     </div>
                 """, snapshot_attr=snapshot_attr, html=html, key=key, component_name=component_name
