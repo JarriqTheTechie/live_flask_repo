@@ -33,10 +33,11 @@ class HasSnapshots:
 
 
         class_name: str = req_snapshot['snapshot']['class']
+        fqdn: str = req_snapshot['snapshot']['fqdn']
         data: dict[str, Any] = req_snapshot['snapshot']['data']
         # children = req_snapshot['snapshot']['children']
 
-        _class: Any = to_class(f"templates.liveflask.{class_name}.{class_name}")()
+        _class: Any = to_class(fqdn)()
         _class.__name__, _class.__class__.__name__ = class_name, class_name
         if getattr(_class, "key", None):
             #print("checking if component key is set.......")
@@ -50,7 +51,7 @@ class HasSnapshots:
             setattr(_class, prop[0], prop[1])
         return _class
 
-    def to_snapshot(self, _class: Any):
+    def to_snapshot(self, _class: Any, component_fqdn):
         props: dict[str, Any] = self.get_props(_class)
 
         # loop through props and if any key matches a key in _class.mvlive__url, add the key value pair to props[url]
@@ -111,6 +112,7 @@ class HasSnapshots:
 
         snapshot: dict[str, Any] = {
             "class": _class.__class__.__name__,
+            "fqdn": component_fqdn,
             "key": key,
             "data": props,
             # "html": html,

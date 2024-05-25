@@ -16,8 +16,10 @@ class HasRenders:
         if "." in component_name:
             dir_name, component_name = component_name.rsplit(".", 1)
             _class: Any = to_class(f"templates.liveflask.{dir_name}.{component_name}.{component_name}")
+            component_fqdn: str = f"templates.liveflask.{dir_name}.{component_name}.{component_name}"
         else:
             _class: Any = to_class(f"templates.liveflask.{component_name}.{component_name}")
+            component_fqdn: str = f"templates.liveflask.{component_name}.{component_name}"
         component_instance = _class()
         component_name: str = _class.__name__
 
@@ -60,10 +62,11 @@ class HasRenders:
             component_instance.booted()
 
         # set_attribute(component_instance, 'key', key)
-        html, snapshot = self.to_snapshot(component_instance)
+        html, snapshot = self.to_snapshot(component_instance, component_fqdn)
         snapshot_attr: str = json.dumps(snapshot)
 
         #print(f"Snapshot: {snapshot}")
+
 
         return Markup(
             render_template_string(
