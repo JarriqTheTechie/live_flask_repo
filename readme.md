@@ -99,9 +99,9 @@ class CounterComponent:
 
 ```html
 <div style="text-align: center">
-    <button data-action="increment">+</button>
+    <button liveflask-action="increment">+</button>
     <h1>{{ count }}</h1>
-    <button data-action="decrement">-</button>
+    <button liveflask-action="decrement">-</button>
 </div>
 ```
 
@@ -140,7 +140,7 @@ class SimpleUsersComponent:
 ```html
 
 <div>
-    <input data-model="search" type="text" placeholder="Search users..."/>
+    <input liveflask-model="search" type="text" placeholder="Search users..."/>
 
     <ul>
         {% for user in users %}
