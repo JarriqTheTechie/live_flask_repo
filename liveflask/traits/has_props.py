@@ -40,11 +40,13 @@ class HasProps:
 
         if "." in prop:
             self.access_nested_dict_in_component(_class, prop, val)
+            new_val = _class.__dict__[prop.split('.')[0]][prop.split('.')[1]]
         else:
             setattr(_class, prop, val)
+            new_val = getattr(_class, prop)
 
 
-        new_val = getattr(_class, prop)
+
         if hasattr(_class, 'updated'):
             _class.updated(prop, new_val)
 
