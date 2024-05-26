@@ -8,6 +8,7 @@ from flask import render_template_string
 from markupsafe import Markup
 
 from ..utils import to_class
+from ..traits.has_synthesizer import Synthesizer
 
 
 class HasSnapshots:
@@ -119,6 +120,6 @@ class HasSnapshots:
         }
 
         snapshot['checksum']: str = hashlib.md5(
-            json.dumps(snapshot, sort_keys=True, ensure_ascii=True).encode('utf-8')).hexdigest()
+            json.dumps(snapshot, sort_keys=True, ensure_ascii=True, cls=Synthesizer).encode('utf-8')).hexdigest()
 
         return html, snapshot

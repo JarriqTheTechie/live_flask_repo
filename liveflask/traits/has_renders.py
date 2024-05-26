@@ -6,11 +6,12 @@ from flask import request as req
 from markupsafe import Markup
 
 from ..utils import to_class
+from ..traits.has_synthesizer import Synthesizer
 
 
 class HasRenders:
     def inital_render(self, component_name: str, *args, **kwargs):
-        #print(f"Doing initial render {component_name}")
+        # print(f"Doing initial render {component_name}")
         # if key == "":
         #     key = f"mvlive_{component_name}_{secrets.token_urlsafe()}"
         if "." in component_name:
@@ -63,10 +64,9 @@ class HasRenders:
 
         # set_attribute(component_instance, 'key', key)
         html, snapshot = self.to_snapshot(component_instance, component_fqdn)
-        snapshot_attr: str = json.dumps(snapshot)
+        snapshot_attr: str = json.dumps(snapshot, cls=Synthesizer)
 
-        #print(f"Snapshot: {snapshot}")
-
+        # print(f"Snapshot: {snapshot}")
 
         return Markup(
             render_template_string(
