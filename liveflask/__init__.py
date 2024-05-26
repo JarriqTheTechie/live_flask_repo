@@ -134,7 +134,8 @@ def LiveFlaskExt(app: Flask):
         LiveFlask().set_props(_class, 'emits', _class.emits)
         component = _class
 
-        html, snapshot = LiveFlask().to_snapshot(component)
+        fqdn = req['snapshot']['fqdn']
+        html, snapshot = LiveFlask().to_snapshot(component, fqdn)
         return {
             "html": html, "snapshot": snapshot
         }
