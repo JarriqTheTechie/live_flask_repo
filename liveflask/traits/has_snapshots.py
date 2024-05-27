@@ -16,15 +16,16 @@ class HasSnapshots:
         if isinstance(data, str):
             # Assume data is a JSON string
             data = json.loads(data)
-
         # Convert types based on type hints
-        for field_name, field_type in obj.__annotations__.items():
-            if field_name in data and isinstance(data[field_name], str):
-                try:
-                    data[field_name] = field_type(data[field_name])
-                except ValueError:
-                    pass  # or handle the error as needed
-        return obj(**data)
+        if obj:
+            for field_name, field_type in obj.__annotations__.items():
+                if field_name in data and isinstance(data[field_name], str):
+                    try:
+                        data[field_name] = field_type(data[field_name])
+                    except ValueError:
+                        pass  # or handle the error as needed
+            return obj(**data)
+        return data
 
 
     def from_snapshot(self, req_snapshot: dict[str, Any]):
@@ -68,9 +69,10 @@ class HasSnapshots:
 
         props = self.get_props(_class)
 
+        class_annotations = _class.__annotations__
         for key in list(props.keys()):
             try:
-                property_class = _class.__annotations__.get("payment_message")
+                property_class = class_annotations.get(key)
                 props[key] = self.hydrate(property_class, props[key])
             except json.JSONDecodeError:
                 pass
