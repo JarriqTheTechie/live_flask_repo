@@ -9,7 +9,6 @@ class HasProps:
                        callable(getattr(component, attribute)) and attribute.startswith('__') is False]
 
         for key in component.__dict__.items():
-            #print(key)
             if key[0].startswith("_"):
                 continue
             if key[0] in method_list:
@@ -21,16 +20,14 @@ class HasProps:
                 props[f'{method}'] = getattr(component, method)
             else:
                 pass
-
-        #print(props)
         return props
 
     def set_props(self, _class, prop, val) -> NoReturn:
         if prop in _class.mvlive__locked:
             raise AttributeError(f"Property [{prop}] is locked from client-side editing.")
         # generate names for hook methods using prop name
-        updated_hook: str = f'updated_{prop}'
-        updating_hook: str = f'updating_{prop}'
+        updated_hook: str = f'updated_{prop.split(".")[0]}'
+        updating_hook: str = f'updating_{prop.split(".")[0]}'
 
         if hasattr(_class, 'updating'):
             _class.updating(prop, val)
@@ -44,8 +41,6 @@ class HasProps:
         else:
             setattr(_class, prop, val)
             new_val = getattr(_class, prop)
-
-
 
         if hasattr(_class, 'updated'):
             _class.updated(prop, new_val)

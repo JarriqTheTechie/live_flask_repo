@@ -19,7 +19,6 @@ class HasActions:
         for item in dict_diff_changed_values(props, new_props):
             self.set_props(component, item, new_props.get(item))
             session[item] = new_props.get(item)
-        #print(new_props, ":::::::::::::::::::::")
         return component
 
     def call_event_handler(self, component: Any, parsed_method: str, *args, **kwargs):
@@ -47,6 +46,11 @@ class HasActions:
                 # Remove the event from emits
                 component.emits = [emit for emit in component.emits if emit['event'] != event]
             else:
+                component.emits = [emit for emit in component.emits if emit['event'] != event]
+
+        if "emits" in props:
+            event: str = args[0]
+            for emit in props["emits"]:
                 component.emits = [emit for emit in component.emits if emit['event'] != event]
 
         return component

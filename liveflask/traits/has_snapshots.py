@@ -26,7 +26,7 @@ class HasSnapshots:
         # pprint.pprint(req_snapshot['snapshot'])
 
         source_checksum: str = hashlib.md5(
-            json.dumps(req_snapshot['snapshot'], sort_keys=True, ensure_ascii=True).encode('utf-8')).hexdigest()
+            json.dumps(req_snapshot['snapshot'], sort_keys=True, ensure_ascii=True, cls=Synthesizer).encode('utf-8')).hexdigest()
 
         # TODO: Implement checksum verification
         # if source_checksum != req_checksum:
@@ -50,6 +50,18 @@ class HasSnapshots:
 
         for prop in data.items():
             setattr(_class, prop[0], prop[1])
+
+        props = self.get_props(_class)
+
+        for key in list(props.keys()):
+            try:
+                property_class = _class.__annotations__.get("payment_message")
+                props[key] = property_class.hydrate(props[key])
+                print(props[key])
+            except json.JSONDecodeError:
+                pass
+            except TypeError:
+                pass
         return _class
 
     def to_snapshot(self, _class: Any, component_fqdn):
@@ -98,17 +110,6 @@ class HasSnapshots:
             if callable(props[key]):
                 #print(key)
                 del props[key]
-
-
-        # loop through props and ensure that all values are cast to original types
-        for key in list(props.keys()):
-            if isinstance(props[key], str):
-                try:
-                    props[key] = json.loads(props[key])
-                except json.JSONDecodeError:
-                    pass
-
-
 
 
         snapshot: dict[str, Any] = {
