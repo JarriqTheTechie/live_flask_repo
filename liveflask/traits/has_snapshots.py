@@ -18,13 +18,17 @@ class HasSnapshots:
             data = json.loads(data)
         # Convert types based on type hints
         if obj:
-            for field_name, field_type in obj.__annotations__.items():
-                if field_name in data and isinstance(data[field_name], str):
-                    try:
-                        data[field_name] = field_type(data[field_name])
-                    except ValueError:
-                        pass  # or handle the error as needed
-            return obj(**data)
+            try:
+                annotations = obj.__annotations__
+                for field_name, field_type in annotations.items():
+                    if field_name in data and isinstance(data[field_name], str):
+                        try:
+                            data[field_name] = field_type(data[field_name])
+                        except ValueError:
+                            pass  # or handle the error as needed
+                return obj(**data)
+            except AttributeError:
+                return data
         return data
 
 

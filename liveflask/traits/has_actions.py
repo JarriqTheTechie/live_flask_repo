@@ -49,7 +49,10 @@ class HasActions:
                 component.emits = [emit for emit in component.emits if emit['event'] != event]
 
         if "emits" in props:
-            event: str = args[0]
+            try:
+                event: str = args[0]
+            except IndexError:
+                event: str = kwargs.get("event")
             for emit in props["emits"]:
                 component.emits = [emit for emit in component.emits if emit['event'] != event]
 
