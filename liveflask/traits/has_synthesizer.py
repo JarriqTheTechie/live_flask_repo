@@ -13,7 +13,6 @@ class Synthesizer(json.JSONEncoder):
     def default(self, obj):
         # Delegate to a subclass's default method
         if hasattr(obj, 'dehydrate'):
-            print(f"dehydrating {obj}")
             return obj.dehydrate()
         else:
             try:

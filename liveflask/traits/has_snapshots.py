@@ -12,6 +12,21 @@ from ..traits.has_synthesizer import Synthesizer
 
 
 class HasSnapshots:
+    def hydrate(self, obj, data: dict[str, Any]):
+        if isinstance(data, str):
+            # Assume data is a JSON string
+            data = json.loads(data)
+
+        # Convert types based on type hints
+        for field_name, field_type in obj.__annotations__.items():
+            if field_name in data and isinstance(data[field_name], str):
+                try:
+                    data[field_name] = field_type(data[field_name])
+                except ValueError:
+                    pass  # or handle the error as needed
+        return obj(**data)
+
+
     def from_snapshot(self, req_snapshot: dict[str, Any]):
         req_checksum: str = req_snapshot['snapshot']['checksum']
         del req_snapshot['snapshot']['checksum']
@@ -56,8 +71,7 @@ class HasSnapshots:
         for key in list(props.keys()):
             try:
                 property_class = _class.__annotations__.get("payment_message")
-                props[key] = property_class.hydrate(props[key])
-                print(props[key])
+                props[key] = self.hydrate(property_class, props[key])
             except json.JSONDecodeError:
                 pass
             except TypeError:
