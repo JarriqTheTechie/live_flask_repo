@@ -13,6 +13,7 @@ from .traits.has_actions import HasActions
 from .traits.has_props import HasProps
 from .traits.has_renders import HasRenders
 from .traits.has_snapshots import HasSnapshots
+from dataclasses import dataclass, fields
 
 
 @dataclass
