@@ -3,6 +3,8 @@ import functools
 import os
 import secrets
 import gzip
+from dataclasses import fields, dataclass
+
 from flask import Blueprint, render_template, Response, Flask
 from flask import request
 from markupsafe import Markup
@@ -11,6 +13,19 @@ from .traits.has_actions import HasActions
 from .traits.has_props import HasProps
 from .traits.has_renders import HasRenders
 from .traits.has_snapshots import HasSnapshots
+
+
+@dataclass
+class BaseTemplate:
+    def render(self, props):
+        from app import app
+        env = app.jinja_environment(app)
+        template_name = getattr(self, "template")
+        template = app.jinja_env.get_template(template_name)
+        namespace = template.new_context(props).get_all()
+        for field in fields(self):
+            namespace[field.name] = getattr(self, field.name)
+        return template.render(namespace)
 
 
 def parse_argument(arg):
